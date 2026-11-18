@@ -1,1 +1,425 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<title>SA'RI | سعري</title>
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#141b31;
+  --panel2:#1c2741;
+  --purple:#8b5cf6;
+  --cyan:#36d9cf;
+  --text:#f4f5ff;
+  --muted:#9ca8c3;
+  --border:#28334d;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Tahoma,sans-serif;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.container{width:min(1120px,92%);margin:auto}
+header{
+  position:sticky;top:0;z-index:10;
+  background:#0b1020ed;backdrop-filter:blur(15px);
+  border-bottom:1px solid var(--border);
+}
+.nav{
+  min-height:76px;display:flex;align-items:center;
+  justify-content:space-between;gap:15px;
+}
+.logo{font-size:27px;font-weight:900;letter-spacing:1px}
+.logo span{color:var(--cyan)}
+.nav-actions{display:flex;gap:9px;align-items:center}
+.btn{
+  border:1px solid var(--border);background:var(--panel);
+  color:white;padding:10px 15px;border-radius:12px;
+}
+.btn:hover{border-color:var(--cyan)}
+.hero{
+  padding:65px 0 45px;
+  background:radial-gradient(ellipse at 50% 0%,#38216c66,transparent 65%);
+  text-align:center;
+}
+.tag{
+  display:inline-block;padding:8px 13px;border-radius:30px;
+  color:var(--cyan);background:#36d9cf13;
+  border:1px solid #36d9cf44;font-size:12px;
+}
+.hero h1{font-size:clamp(32px,6vw,57px);margin:20px 0 12px}
+.hero h1 span{
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;color:transparent;
+}
+.hero p{color:var(--muted);line-height:1.8}
+.search{
+  display:flex;max-width:650px;margin:27px auto 0;
+  padding:7px;background:var(--panel);
+  border:1px solid var(--border);border-radius:16px;
+}
+.search input{
+  flex:1;min-width:0;background:transparent;
+  color:white;border:0;outline:0;padding:12px;
+}
+.search button{
+  background:linear-gradient(120deg,var(--purple),#6541d9);
+  color:white;border:0;border-radius:11px;padding:12px 20px;
+}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:12px;margin:25px auto;max-width:650px;
+}
+.stat{background:#141b3188;border:1px solid var(--border);
+  border-radius:14px;padding:15px}
+.stat strong{display:block;color:var(--cyan);font-size:20px}
+.stat small{color:var(--muted)}
+.section-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin:35px 0 18px;flex-wrap:wrap;
+}
+.section-head h2{margin:0;font-size:23px}
+.muted{color:var(--muted);font-size:13px}
+.filters{display:flex;gap:9px;overflow:auto;padding-bottom:10px}
+.filter{
+  white-space:nowrap;border:1px solid var(--border);
+  background:var(--panel);color:var(--muted);
+  padding:10px 16px;border-radius:30px;
+}
+.filter.active{background:#8b5cf622;color:var(--cyan);
+  border-color:var(--purple)}
+.sort{
+  background:var(--panel);color:white;
+  border:1px solid var(--border);border-radius:10px;
+  padding:10px;
+}
+.grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:17px;margin:20px 0 55px;
+}
+.card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:18px;overflow:hidden;transition:.2s;
+}
+.card:hover{transform:translateY(-4px);border-color:#8b5cf688}
+.product-image{
+  height:190px;background:#202a43;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.product-image img{width:100%;height:100%;object-fit:contain;padding:14px}
+.sample{
+  position:absolute;top:12px;right:12px;
+  background:#111a2bdd;color:#ffd98a;
+  border:1px solid #66552e;padding:6px 9px;
+  border-radius:20px;font-size:10px;
+}
+.card-content{padding:16px}
+.category{font-size:12px;color:var(--cyan)}
+.card h3{margin:9px 0;font-size:17px}
+.description{font-size:12px;color:var(--muted);min-height:34px}
+.price-row{display:flex;justify-content:space-between;
+  align-items:center;margin:17px 0}
+.price{font-size:23px;font-weight:900;color:var(--cyan)}
+.compare{
+  border:1px solid var(--border);background:var(--panel2);
+  color:white;border-radius:10px;padding:9px 12px;
+}
+.compare.selected{border-color:var(--cyan);color:var(--cyan)}
+.empty{
+  grid-column:1/-1;text-align:center;
+  color:var(--muted);padding:40px;
+  border:1px dashed var(--border);border-radius:16px;
+}
+.compare-bar{
+  position:fixed;bottom:15px;left:50%;transform:translateX(-50%);
+  width:min(92%,550px);z-index:20;
+  background:#202a43;border:1px solid var(--purple);
+  border-radius:15px;padding:13px 16px;
+  display:none;align-items:center;justify-content:space-between;
+  gap:10px;box-shadow:0 8px 35px #0008;
+}
+.compare-bar button{
+  background:var(--purple);color:white;border:0;
+  padding:10px 13px;border-radius:10px;
+}
+.modal{
+  position:fixed;inset:0;background:#000b;z-index:30;
+  display:none;align-items:center;justify-content:center;padding:15px;
+}
+.modal-box{
+  width:min(500px,100%);background:var(--panel);
+  border:1px solid var(--border);border-radius:18px;
+  padding:22px;max-height:85vh;overflow:auto;
+}
+.modal-box h2{margin-top:0}
+.compare-item{padding:13px 0;border-bottom:1px solid var(--border)}
+footer{
+  border-top:1px solid var(--border);padding:28px 0;
+  text-align:center;color:var(--muted);font-size:13px;
+}
+footer strong{color:var(--cyan)}
+@media(max-width:750px){
+ .grid{grid-template-columns:repeat(2,1fr);gap:11px}
+ .product-image{height:145px}
+ .card-content{padding:12px}
+ .card h3{font-size:15px}
+ .price{font-size:19px}
+}
+@media(max-width:430px){
+ .grid{grid-template-columns:1fr}
+ .product-image{height:190px}
+ .stats{gap:7px}
+ .stat{padding:11px 5px}
+ .stat strong{font-size:17px}
+ .nav{min-height:65px}
+ .logo{font-size:23px}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="container nav">
+  <div class="logo">SA'<span>RI</span></div>
+  <div class="nav-actions">
+   <button class="btn" id="language">EN</button>
+   <button class="btn" onclick="scrollToProducts()" id="shop">المنتجات</button>
+  </div>
+ </div>
+</header>
+
+<main class="container">
+ <section class="hero">
+  <span class="tag" id="tag">SMART PRICE COMPARISON</span>
+  <h1 id="headline">اعثر على <span>أفضل سعر</span></h1>
+  <p id="subtitle">ابحث عن منتجاتك وقارن الأسعار واكتشف الخيارات المناسبة لك.</p>
+
+  <div class="search">
+   <input id="searchInput" placeholder="ابحث عن هاتف، حاسوب، سماعات...">
+   <button id="searchButton">بحث</button>
+  </div>
+
+  <div class="stats">
+   <div class="stat"><strong>🌍</strong><small id="s1">منصة عالمية</small></div>
+   <div class="stat"><strong>⌕</strong><small id="s2">بحث سهل</small></div>
+   <div class="stat"><strong>⇄</strong><small id="s3">مقارنة الأسعار</small></div>
+  </div>
+ </section>
+
+ <section id="products">
+  <div class="section-head">
+   <div>
+    <h2 id="productsTitle">اكتشف المنتجات</h2>
+    <p class="muted" id="productsSub">اختر منتجًا وابدأ المقارنة</p>
+   </div>
+   <select class="sort" id="sort">
+    <option value="default">الترتيب الافتراضي</option>
+    <option value="low">الأقل سعرًا</option>
+    <option value="high">الأعلى سعرًا</option>
+   </select>
+  </div>
+
+  <div class="filters" id="filters">
+   <button class="filter active" data-category="all">الكل</button>
+   <button class="filter" data-category="phones">الهواتف</button>
+   <button class="filter" data-category="computers">الحواسيب</button>
+   <button class="filter" data-category="audio">السماعات</button>
+   <button class="filter" data-category="gaming">الألعاب</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+ </section>
+</main>
+
+<div class="compare-bar" id="compareBar">
+ <span id="compareCount">تم اختيار 0 منتجات</span>
+ <button onclick="showComparison()" id="compareNow">قارن الآن</button>
+</div>
+
+<div class="modal" id="modal" onclick="closeModal(event)">
+ <div class="modal-box">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+   <h2 id="modalTitle">مقارنة المنتجات</h2>
+   <button class="btn" onclick="hideComparison()">✕</button>
+  </div>
+  <div id="comparisonContent"></div>
+ </div>
+</div>
+
+<footer>
+ <div class="container">
+  <strong>SA'RI</strong> — Smart Price Comparison
+  <p id="footerText">منصة لمساعدة المستخدمين على مقارنة أسعار المنتجات.</p>
+  <small>© 2026 SA'RI. All rights reserved.</small>
+ </div>
+</footer>
+
+<script>
+const products=[
+ {id:1,name:"iPhone 16",en:"iPhone 16",category:"phones",price:799,desc:"هاتف ذكي - مثال توضيحي",image:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600"},
+ {id:2,name:"Samsung Galaxy",en:"Samsung Galaxy",category:"phones",price:699,desc:"هاتف ذكي - مثال توضيحي",image:"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600"},
+ {id:3,name:"MacBook Laptop",en:"MacBook Laptop",category:"computers",price:1299,desc:"حاسوب محمول - مثال توضيحي",image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600"},
+ {id:4,name:"Gaming Laptop",en:"Gaming Laptop",category:"computers",price:1099,desc:"حاسوب للألعاب - مثال توضيحي",image:"https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=600"},
+ {id:5,name:"Wireless Headphones",en:"Wireless Headphones",category:"audio",price:199,desc:"سماعات لاسلكية - مثال توضيحي",image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"},
+ {id:6,name:"Gaming Headset",en:"Gaming Headset",category:"gaming",price:89,desc:"سماعة ألعاب - مثال توضيحي",image:"https://images.unsplash.com/photo-1599669454699-248893623440?w=600"}
+];
+
+let category="all";
+let selected=[];
+let english=false;
+let query="";
+
+const grid=document.getElementById("grid");
+const ar={
+ all:"الكل",phones:"الهواتف",computers:"الحواسيب",
+ audio:"السماعات",gaming:"الألعاب"
+};
+
+function render(){
+ let list=products.filter(p=>
+  (category==="all"||p.category===category)&&
+  (p.name.toLowerCase().includes(query.toLowerCase())||
+   p.en.toLowerCase().includes(query.toLowerCase()))
+ );
+ const sort=document.getElementById("sort").value;
+ if(sort==="low")list.sort((a,b)=>a.price-b.price);
+ if(sort==="high")list.sort((a,b)=>b.price-a.price);
+
+ if(!list.length){
+  grid.innerHTML=`<div class="empty">${english?"No products found":"لم يتم العثور على منتجات"}</div>`;
+  return;
+ }
+
+ grid.innerHTML=list.map(p=>`
+  <article class="card">
+   <div class="product-image">
+    <img src="${p.image}" alt="${p.en}" loading="lazy">
+    <span class="sample">${english?"Sample price":"سعر تجريبي"}</span>
+   </div>
+   <div class="card-content">
+    <span class="category">${english?p.category:ar[p.category]}</span>
+    <h3>${english?p.en:p.name}</h3>
+    <p class="description">${english?"Illustrative product listing":p.desc}</p>
+    <div class="price-row">
+     <span class="price">$${p.price.toLocaleString("en-US")}</span>
+     <button class="compare ${selected.includes(p.id)?"selected":""}"
+      onclick="toggleCompare(${p.id})">
+      ${selected.includes(p.id)?"✓ "+(english?"Selected":"تم الاختيار"):(english?"Compare":"قارن")}
+     </button>
+    </div>
+   </div>
+  </article>
+ `).join("");
+}
+
+function toggleCompare(id){
+ if(selected.includes(id)){
+  selected=selected.filter(x=>x!==id);
+ }else{
+  if(selected.length>=3){
+   alert(english?"You can compare up to 3 products":"يمكنك مقارنة 3 منتجات كحد أقصى");
+   return;
+  }
+  selected.push(id);
+ }
+ updateCompare();
+ render();
+}
+
+function updateCompare(){
+ const bar=document.getElementById("compareBar");
+ bar.style.display=selected.length?"flex":"none";
+ document.getElementById("compareCount").textContent=
+ english?`${selected.length} products selected`:`تم اختيار ${selected.length} منتجات`;
+}
+
+function showComparison(){
+ if(selected.length<2){
+  alert(english?"Select at least 2 products":"اختر منتجين على الأقل للمقارنة");
+  return;
+ }
+ const items=products.filter(p=>selected.includes(p.id));
+ document.getElementById("comparisonContent").innerHTML=items.map(p=>`
+  <div class="compare-item">
+   <strong>${english?p.en:p.name}</strong>
+   <p style="color:var(--cyan);font-size:22px;font-weight:bold">$${p.price}</p>
+   <small class="muted">${english?"Illustrative price only":"سعر توضيحي فقط"}</small>
+  </div>
+ `).join("");
+ document.getElementById("modal").style.display="flex";
+}
+
+function hideComparison(){
+ document.getElementById("modal").style.display="none";
+}
+function closeModal(e){
+ if(e.target.id==="modal")hideComparison();
+}
+function scrollToProducts(){
+ document.getElementById("products").scrollIntoView({behavior:"smooth"});
+}
+
+document.getElementById("filters").addEventListener("click",e=>{
+ if(!e.target.dataset.category)return;
+ category=e.target.dataset.category;
+ document.querySelectorAll(".filter").forEach(b=>
+  b.classList.toggle("active",b===e.target));
+ render();
+});
+
+document.getElementById("searchButton").onclick=()=>{
+ query=document.getElementById("searchInput").value.trim();
+ render();
+ scrollToProducts();
+};
+document.getElementById("searchInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")document.getElementById("searchButton").click();
+});
+document.getElementById("sort").onchange=render;
+
+document.getElementById("language").onclick=()=>{
+ english=!english;
+ document.documentElement.lang=english?"en":"ar";
+ document.documentElement.dir=english?"ltr":"rtl";
+ document.getElementById("language").textContent=english?"عربي":"EN";
+ document.getElementById("shop").textContent=english?"Products":"المنتجات";
+ document.getElementById("tag").textContent="SMART PRICE COMPARISON";
+ document.getElementById("headline").innerHTML=english?
+  'Find the <span>best price</span>':'اعثر على <span>أفضل سعر</span>';
+ document.getElementById("subtitle").textContent=english?
+  "Search products, compare prices and discover your options.":
+  "ابحث عن منتجاتك وقارن الأسعار واكتشف الخيارات المناسبة لك.";
+ document.getElementById("productsTitle").textContent=english?"Discover products":"اكتشف المنتجات";
+ document.getElementById("productsSub").textContent=english?"Choose a product and compare":"اختر منتجًا وابدأ المقارنة";
+ document.getElementById("searchInput").placeholder=english?"Search products...":"ابحث عن هاتف، حاسوب، سماعات...";
+ document.getElementById("searchButton").textContent=english?"Search":"بحث";
+ document.getElementById("s1").textContent=english?"Global platform":"منصة عالمية";
+ document.getElementById("s2").textContent=english?"Easy search":"بحث سهل";
+ document.getElementById("s3").textContent=english?"Price comparison":"مقارنة الأسعار";
+ document.getElementById("footerText").textContent=english?
+  "A platform to help users compare product prices.":
+  "منصة لمساعدة المستخدمين على مقارنة أسعار المنتجات.";
+ document.getElementById("sort").options[0].text=english?"Default order":"الترتيب الافتراضي";
+ document.getElementById("sort").options[1].text=english?"Lowest price":"الأقل سعرًا";
+ document.getElementById("sort").options[2].text=english?"Highest price":"الأعلى سعرًا";
+ document.querySelectorAll(".filter").forEach(b=>{
+  b.textContent=english?
+   ({all:"All",phones:"Phones",computers:"Computers",audio:"Audio",gaming:"Gaming"}[b.dataset.category]):
+   ar[b.dataset.category];
+ });
+ document.getElementById("compareNow").textContent=english?"Compare now":"قارن الآن";
+ document.getElementById("modalTitle").textContent=english?"Product comparison":"مقارنة المنتجات";
+ updateCompare();
+ render();
+};
+
+render();
+</script>
+</body>
+</html>
+
